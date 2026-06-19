@@ -1,258 +1,162 @@
 # URL Shortener
 
-A full-stack URL Shortener application built using React, Node.js, Express, and MongoDB.
+A full-stack URL Shortener application built with the MERN stack. Users can register, log in securely, shorten long URLs, manage their links, and track basic analytics.
 
-Users can register, log in, shorten long URLs, track clicks, view visit history, edit aliases, and manage their shortened URLs through a clean dashboard.
+## Features
 
----
-
-##  Features
-
-### Authentication
-
-* User Registration
-* User Login
-* JWT Authentication
-* Protected Routes
-
-### URL Management
-
-* Create Short URLs
-* Reuse Existing Short URLs for Duplicate URLs
-* Delete URLs
-* Edit Short URL Alias
-* View Original URL
-
-### Analytics
-
-* Click Counter
-* Last Visited Timestamp
-* Automatic Redirect to Original URL
-
-### Dashboard
-
-* View All Personal URLs
-* Sort URLs by Last Visited
-* URL Statistics
-* Responsive UI
+- User Authentication (JWT + HTTP-only Cookies)
+- Password Hashing using bcrypt
+- Generate unique short URLs
+- Redirect to original URLs
+- Track click count
+- Track last visited timestamp
+- View all URLs created by the logged-in user
+- Edit custom URL alias
+- Delete shortened URLs
+- URL normalization to avoid duplicate entries
+- Route protection using authentication middleware
+- Rate limiting to prevent API abuse and brute-force attacks
 
 ---
 
-##  Tech Stack
-
-### Frontend
-
-* React
-* Vite
-* React Router DOM
-* Axios
-* Tailwind CSS
+## Tech Stack
 
 ### Backend
 
-* Node.js
-* Express.js
-* MongoDB
-* Mongoose
-* JWT Authentication
-* bcrypt
-* normalize-url
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- JWT
+- bcrypt
+- express-rate-limit
+- normalize-url
+- cookie-parser
+- dotenv
+
+### Frontend
+
+- React
+- Vite
+- Axios
+- React Router DOM
 
 ---
 
-##  Project Structure
+## Project Structure
 
-```text
-urlshortener/
+```
+backend/
 │
-├── frontend/
-│   ├── src/
-│   │   ├── pages/
-│   │   ├── components/
-│   │   ├── services/
-│   │   └── App.jsx
-│   │
-│   └── package.json
+├── middleware/
+├── models/
+├── routes/
+├── app.js
+└── .env
+
+frontend/
 │
-├── backend/
-│   ├── models/
-│   ├── routes/
-│   ├── middleware/
-│   ├── app.js
-│   └── package.json
-│
-└── README.md
+├── src/
+├── components/
+├── pages/
+└── App.jsx
 ```
 
 ---
 
-##  Installation
+## Authentication
 
-### Clone Repository
-
-```bash
-git clone https://github.com/teja-0311/UrlShortener.git
-cd UrlShortener
-```
-
----
-
-##  Backend Setup
-
-Navigate to backend:
-
-```bash
-cd backend
-```
-
-Install dependencies:
-
-```bash
-npm install
-```
-
-Create a `.env` file:
-
-```env
-PORT=3000
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_secret_key
-```
-
-Start backend server:
-
-```bash
-npm run dev
-```
-
-Server runs on:
-
-```text
-http://localhost:3000
-```
+- User Registration
+- User Login
+- JWT Token Generation
+- HTTP-only Cookie Storage
+- Protected Routes using Middleware
 
 ---
 
-##  Frontend Setup
+## Rate Limiting
 
-Navigate to frontend:
+Implemented using **express-rate-limit** to protect sensitive endpoints from abuse.
 
-```bash
-cd frontend
-```
+Current configuration:
 
-Install dependencies:
+- Maximum **5 requests**
+- Per **5 minutes**
+- Returns **HTTP 429 (Too Many Requests)** when the limit is exceeded
 
-```bash
-npm install
-```
+This helps protect against:
 
-Start frontend:
-
-```bash
-npm run dev
-```
-
-Frontend runs on:
-
-```text
-http://localhost:5173
-```
+- Brute-force login attacks
+- API abuse
+- Spam URL generation
+- Denial-of-Service (DoS) attempts
 
 ---
 
-##  API Endpoints
+## URL Analytics
 
-### User Routes
+Each shortened URL stores:
 
-#### Register
-
-```http
-POST /api/users/register
-```
-
-#### Login
-
-```http
-POST /api/users/login
-```
+- Original URL
+- Short URL
+- Owner
+- Click Count
+- Last Visited Timestamp
 
 ---
 
-### URL Routes
+## API Endpoints
 
-#### Create Short URL
+### Authentication
 
-```http
-POST /api/urls
-```
+| Method | Endpoint |
+|--------|----------|
+| POST | `/api/users/register` |
+| POST | `/api/users/login` |
+| POST | `/api/users/logout` |
 
-#### Get User URLs
+### URLs
 
-```http
-GET /api/urls/myurls
-```
-
-#### Edit URL Alias
-
-```http
-PUT /api/urls/edit/:shorturl
-```
-
-#### Delete URL
-
-```http
-DELETE /api/urls/:id
-```
-
-#### Redirect to Original URL
-
-```http
-GET /api/urls/:shorturl
-```
+| Method | Endpoint |
+|--------|----------|
+| POST | `/api/urls` |
+| GET | `/api/urls/myurls` |
+| GET | `/api/urls/:shorturl` |
+| PUT | `/api/urls/edit/:shorturl` |
+| DELETE | `/api/urls/:id` |
 
 ---
 
-##  Example
+## Concepts Learned
 
-Original URL:
-
-```text
-https://www.google.com
-```
-
-Generated Short URL:
-
-```text
-http://localhost:3000/api/urls/a1b2c3d4
-```
-
----
-
-##  Features Implemented
-
-* URL Shortening
-* Duplicate URL Detection
-* URL Click Tracking
-* Last Visited Tracking
-* User Authentication
-* Protected Dashboard
-* URL Deletion
-* Alias Editing
-* MongoDB Integration
-* REST API Architecture
+- REST API Development
+- JWT Authentication
+- Cookie-based Authentication
+- Password Hashing
+- CRUD Operations
+- MongoDB Relationships
+- Express Middleware
+- Route Protection
+- URL Normalization
+- Rate Limiting
+- React and Express Integration
 
 ---
 
-##  Future Enhancements
+## Future Improvements
 
-* QR Code Generation
-* Custom Vanity URLs
-* URL Expiration
-* Advanced Analytics Dashboard
-* Copy-to-Clipboard Button
-* Dark Mode
-* Public API Access
-* Admin Dashboard
+- Redis-based Rate Limiting
+- Redis Caching
+- QR Code Generation
+- Custom Expiration Dates
+- URL Expiry
+- Public Analytics Dashboard
+- Docker Support
+- CI/CD Pipeline
+- Unit and Integration Testing
 
+---
 
+## Author
+
+**Teja**
