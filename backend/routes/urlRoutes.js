@@ -6,8 +6,16 @@ const urlModel = require("../models/urlModel");
 const authMiddleware = require("../middleware/authMiddleware");
 const crypto = require("crypto");
 
+const ratelimit = require("express-rate-limit");
+const createLimiter = ratelimit({
+    windowMs: 5 * 60 * 1000, 
+    max:5,
+    keyGenerator: (req) => req.user.id,
+    message: "Too many requests from this IP, please try again after 5 minutes"
+})
 
-router.post("/", authMiddleware, async (req, res) => {
+
+router.post("/",authMiddleware, createLimiter ,async (req, res) => {
     try {
         
         const { originalurl } = req.body;

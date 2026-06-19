@@ -6,6 +6,12 @@ const userRoutes = require("./routes/userRoutes");
 require("dotenv").config();
 const cookieParser = require("cookie-parser");
 
+//rate limiting
+const limiter = require("express-rate-limit");
+const rate = limiter({
+     windowMs:10*60*100,
+    max:100
+})
 const app=express();
 app.use(express.json());
 app.use(cors({
@@ -13,6 +19,7 @@ app.use(cors({
     credentials: true
 }));
 app.use(cookieParser());
+app.use(rate);
 mongoose.connect(process.env.MONGO_URI).then(()=> {
 
 }).catch((err)=>{

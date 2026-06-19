@@ -11,6 +11,20 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 
+const ratelimit = require("express-rate-limit");
+const loginLimiter = ratelimit({
+    windowMs: 5 * 60 * 1000, 
+    max:5,
+    handler: (req, res) => {
+        console.log("Rate limit exceeded:", req.ip);
+
+        res.status(429).json({
+            message: "Too many requests"
+        })
+    }
+});
+
+
 router.post("/register", async (req, res) => {
     try {
 
@@ -58,7 +72,7 @@ router.post("/register", async (req, res) => {
 });
 
 
-router.post("/login", async (req, res) => {
+router.post("/login",loginLimiter, async (req, res) => {
     try {
 
         const { email, password } = req.body;
